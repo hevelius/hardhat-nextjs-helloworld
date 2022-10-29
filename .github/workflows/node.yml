@@ -70,7 +70,3 @@ jobs:
             ${{ runner.os }}-yarn-
       - name: Client Build
         run: yarn workspace client build
-
-  finish:
-    needs: [backend, client]
-    runs-on: ubuntu-latest
