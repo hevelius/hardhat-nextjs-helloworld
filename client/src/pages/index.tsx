@@ -5,7 +5,7 @@ import { VStack, Heading, Box } from "@chakra-ui/layout";
 import { Button, Input } from "@chakra-ui/react";
 import { ethers } from "ethers";
 import Install from "../components/Install";
-import HelloWorld from  "../../../backend/artifacts/contracts/HelloWorld.sol/HelloWorld.json";
+import HelloWorld from  "backend/artifacts/contracts/HelloWorld.sol/HelloWorld.json";
 import { contractAddress } from "../utils/constants";
 
 declare let window: any;
