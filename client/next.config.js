@@ -1,4 +1,4 @@
-/** @type {import('next').NextConfig} */
+const withTM = require('next-transpile-modules')(['backend']);
 const nextConfig = {
   experimental: {
     externalDir: true,
@@ -7,4 +7,4 @@ const nextConfig = {
   swcMinify: true,
 };
 
-module.exports = nextConfig;
+module.exports = withTM(nextConfig);
