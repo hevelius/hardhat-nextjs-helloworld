@@ -48,6 +48,10 @@ jobs:
           ${{ runner.os }}-yarn-
     - name: Run Compile
       run: yarn workspace backend compile
+    - uses: actions/upload-artifact@master
+      with:
+        name: artifacts
+        path: backend/artifacts
     - name: Contract Test
       run: yarn workspace backend test
     - name: Contract Coverage
@@ -57,10 +61,15 @@ jobs:
 
   client:
     runs-on: ubuntu-latest
-    needs: [prepare-dependencies]
+    needs: [prepare-dependencies, backend]
     steps:
       - name: Checkout 🛎️
         uses: actions/checkout@v2 # If you're using actions/checkout@v2 you must set persist-credentials to false in most cases for the deployment to work correctly.
+      - uses: actions/download-artifact@master
+        with:
+          name: artifacts
+          path: backend/artifacts
+      - run: ls backend
       - name: Cache  💾
         uses: actions/cache@v2
         id: yarn-cache
