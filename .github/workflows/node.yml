@@ -48,7 +48,8 @@ jobs:
           ${{ runner.os }}-yarn-
     - name: Run Compile
       run: yarn workspace backend compile
-    - uses: actions/upload-artifact@master
+    - name: Upload artifacts
+      uses: actions/upload-artifact@master
       with:
         name: artifacts
         path: backend/artifacts
@@ -63,14 +64,14 @@ jobs:
     runs-on: ubuntu-latest
     needs: [prepare-dependencies, backend]
     steps:
-      - name: Checkout 🛎️
-        uses: actions/checkout@v2 # If you're using actions/checkout@v2 you must set persist-credentials to false in most cases for the deployment to work correctly.
-      - uses: actions/download-artifact@master
+      - name: Checkout
+        uses: actions/checkout@v2
+      - name: Download artifacts
+        uses: actions/download-artifact@master
         with:
           name: artifacts
           path: backend/artifacts
-      - run: ls backend
-      - name: Cache  💾
+      - name: Cache
         uses: actions/cache@v2
         id: yarn-cache
         with:
@@ -78,6 +79,6 @@ jobs:
           key: ${{ runner.os }}-yarn-${{ hashFiles('**/yarn.lock') }}
           restore-keys: |
             ${{ runner.os }}-yarn-
-      - name: Build 🔧 # This example project is built using npm and outputs the result to the 'build' folder. Replace with the commands required to build your project, or remove this step entirely if your site is pre-built.
+      - name: Build
         uses: actions/setup-node@v2
       - run: yarn workspace client build
