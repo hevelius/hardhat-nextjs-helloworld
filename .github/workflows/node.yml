@@ -57,21 +57,19 @@ jobs:
 
   client:
     runs-on: ubuntu-latest
+    working-directory: ./
     needs: [prepare-dependencies, backend]
     steps:
-      - uses: actions/checkout@v2
-      - name: Use Node.js
-        uses: actions/setup-node@v2
-        with:
-          node-version: '16.17.1'
-      - uses: actions/cache@v2
+      - name: Checkout 🛎️
+        uses: actions/checkout@v2 # If you're using actions/checkout@v2 you must set persist-credentials to false in most cases for the deployment to work correctly.
+      - name: Cache  💾
+        uses: actions/cache@v2
         id: yarn-cache
         with:
           path: '**/node_modules'
           key: ${{ runner.os }}-yarn-${{ hashFiles('**/yarn.lock') }}
           restore-keys: |
             ${{ runner.os }}-yarn-
-      - name: Start linter
-        run: yarn workspace client lint
-      - name: Build
-        run: yarn workspace client build
+      - name: Build 🔧 # This example project is built using npm and outputs the result to the 'build' folder. Replace with the commands required to build your project, or remove this step entirely if your site is pre-built.
+        uses: actions/setup-node@v1
+      - run: yarn workspace client build

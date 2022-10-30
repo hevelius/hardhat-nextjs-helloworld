@@ -1,13 +1,7 @@
-const withPlugins = require('next-compose-plugins');
-const withTM = require('next-transpile-modules')([
-  'backend',
-]);
-
+/** @type {import('next').NextConfig} */
 const nextConfig = {
   reactStrictMode: true,
   swcMinify: true,
 };
 
-module.exports = withPlugins([
-  withTM
-], nextConfig);
+module.exports = nextConfig;
