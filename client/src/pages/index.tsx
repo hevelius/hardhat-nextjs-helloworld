@@ -1,20 +1,21 @@
 import React from "react";
 import type { NextPage } from "next";
 import Head from "next/head";
+import * as O from "fp-ts/lib/Option";
+import { pipe } from "fp-ts/function";
+import * as E from "fp-ts/Either";
 import { VStack, Heading, Box } from "@chakra-ui/layout";
 import { Button, Input } from "@chakra-ui/react";
 import { ethers } from "ethers";
 import Install from "../components/Install";
-import HelloWorld from  "backend/artifacts/contracts/HelloWorld.sol/HelloWorld.json";
+import { HelloWorld__factory as HelloWorld } from "backend/typechain-types";
 import { contractAddress } from "../utils/constants";
 
 declare let window: any;
 
 const Home: NextPage = () => {
-  // TODO: move into context
   const [provider, setProvider] =
     React.useState<ethers.providers.Web3Provider>();
-  const [signer, setSigner] = React.useState<ethers.providers.JsonRpcSigner>();
 
   const [helloText, setHelloText] = React.useState("");
   const [value, setValue] = React.useState("");
@@ -29,8 +30,8 @@ const Home: NextPage = () => {
   }, []);
 
   React.useEffect(() => {
-    provider !== undefined ? setSigner(provider.getSigner()) : null;
-  }, [provider]);
+    console.log("RESULT");
+  }, [helloText]);
 
   if (typeof window === "undefined") {
     return <></>;
@@ -40,52 +41,41 @@ const Home: NextPage = () => {
     return <Install />;
   }
 
-  /*React.useEffect(() => {
-    if(!currentAccount || !ethers.utils.isAddress(currentAccount)) return
-    //client side code
-    if(!window.ethereum) return
-    const provider = new ethers.providers.Web3Provider(window.ethereum)
-    provider.getBalance(currentAccount).then((result)=>{
-      setBalance(ethers.utils.formatEther(result))
-    })
-    provider.getNetwork().then((result)=>{
-      setChainId(result.chainId)
-      setChainName(result.name)
-    })
-
-  },[currentAccount]);
-*/
   const onClickConnect = () => {
-    if (provider) {
-      provider
-        .send("eth_requestAccounts", [])
-        .then((accounts) => {
-          if (accounts.length > 0) setCurrentAccount(accounts[0]);
-        })
-        .catch((e) => console.log(e));
-    }
+    pipe(
+      getProvider(),
+      O.fold(console.error, (r) =>
+        r
+          .send("eth_requestAccounts", [])
+          .then((accounts) => {
+            if (accounts.length > 0) setCurrentAccount(accounts[0]);
+          })
+          .catch(E.toError),
+      ),
+    );
   };
+
+  const getProvider = () => pipe(provider, O.fromNullable);
 
   const onClickDisconnect = () => {
     setCurrentAccount(undefined);
   };
 
   const onClickHelloWorld = async () => {
-    const contract = new ethers.Contract(
-      contractAddress,
-      HelloWorld.abi,
-      signer,
+    pipe(
+      getProvider(),
+      O.map((_) => HelloWorld.connect(contractAddress, _)),
+      O.chainNullableK((helloContract) => helloContract.getHelloWorld()),
+      O.chainNullableK((_) => _.then((result) => setHelloText(result))),
     );
-    setHelloText(await contract.getHelloWorld());
   };
 
   const onClickSetHelloWorld = async () => {
-    const contract = new ethers.Contract(
-      contractAddress,
-      HelloWorld.abi,
-      signer,
+    pipe(
+      getProvider(),
+      O.map((_) => HelloWorld.connect(contractAddress, _.getSigner())),
+      O.chainNullableK((helloContract) => helloContract.setHelloWorld(value)),
     );
-    await contract.setHelloWorld(value);
   };
 
   return provider !== undefined ? (
