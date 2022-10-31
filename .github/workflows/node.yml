@@ -57,8 +57,10 @@ jobs:
       run: yarn workspace backend test
     - name: Contract Coverage
       run: yarn workspace backend coverage
-    - name: Start Hardhat node and deploy
-      run: yarn workspace backend deploy &
+    - name: Start Hardhat node
+      run: yarn workspace backend start
+    - name: Deploy contract
+      run: yarn workspace backend deploy
 
   client:
     runs-on: ubuntu-latest

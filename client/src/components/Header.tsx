@@ -1,16 +1,13 @@
-//src/components/header.tsx
 import NextLink from "next/link";
 import {
   Flex,
-  Button,
   useColorModeValue,
   Spacer,
   Heading,
   LinkBox,
-  LinkOverlay,
 } from "@chakra-ui/react";
 
-const siteTitle = "FirstDAPP";
+const siteTitle = "HelloWorld DApp";
 const Header = () => {
   return (
     <Flex
@@ -25,7 +22,6 @@ const Header = () => {
         </NextLink>
       </LinkBox>
       <Spacer />
-      <Button>Button for Account </Button>
     </Flex>
   );
 };
