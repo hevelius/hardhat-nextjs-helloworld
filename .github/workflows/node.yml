@@ -48,11 +48,11 @@ jobs:
           ${{ runner.os }}-yarn-
     - name: Run Compile
       run: yarn workspace backend compile
-    - name: Upload artifacts
+    - name: Upload types
       uses: actions/upload-artifact@master
       with:
-        name: artifacts
-        path: backend/artifacts
+        name: typechain-types
+        path: backend/typechain-types
     - name: Contract Test
       run: yarn workspace backend test
     - name: Contract Coverage
@@ -69,8 +69,8 @@ jobs:
       - name: Download artifacts
         uses: actions/download-artifact@master
         with:
-          name: artifacts
-          path: backend/artifacts
+          name: typechain-types
+          path: backend/typechain-types
       - name: Cache
         uses: actions/cache@v2
         id: yarn-cache
