@@ -69,8 +69,8 @@ jobs:
       - name: Download artifacts
         uses: actions/download-artifact@master
         with:
-          name: artifacts
-          path: backend/artifacts
+          name: typechain-types
+          path: backend/typechain-types
       - name: Cache
         uses: actions/cache@v2
         id: yarn-cache
